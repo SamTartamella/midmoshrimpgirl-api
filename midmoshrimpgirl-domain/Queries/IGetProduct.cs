@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using midmoshrimpgirl_domain.Models;
 
 namespace midmoshrimpgirl_domain.Queries
 {
-    internal interface IGetProduct
+    public interface IGetProduct
     {
+        Task<DomainProductResponse> WithId(int productId);
     }
 }
