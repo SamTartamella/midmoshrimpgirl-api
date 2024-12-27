@@ -19,13 +19,20 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
         {
             var parameters = new DynamicParameters();
             parameters.Add("@ProductId", productId);
+
             var databaseProduct = (await _dapperWrapper.ExecuteStoredProcedure<DatabaseProduct>("GetProduct", parameters)).FirstOrDefault();
+
+            if (databaseProduct is null)
+            {
+                throw new Exception("Product not found.");
+            }
             var domainProduct = new DomainProductResponse()
             {
                 Name = databaseProduct.Name,
                 Price = databaseProduct.Price,
                 ImageLink = databaseProduct.ImageLink,
             };
+
             return domainProduct;
         }
     }
