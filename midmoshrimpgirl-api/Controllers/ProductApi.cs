@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using midmoshrimpgirl_api.Extensions;
+using midmoshrimpgirl_api.Models.Exceptions;
 using midmoshrimpgirl_api.Models.Responses;
+using midmoshrimpgirl_domain.Models;
 using midmoshrimpgirl_domain.Queries;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,9 +22,24 @@ namespace midmoshrimpgirl_api.Controllers
         [Route("products/{productId}")]
         public async Task<IActionResult> GetProduct([Required][FromRoute] int productId)
         {
-            var product = await _GetProduct.WithId(productId);
+            try
+            {
+                var product = await _GetProduct.WithId(productId);
+                return Ok(product.ToApiResponse());
+            }
+            catch (SQLException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return StatusCode(404, ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
 
-            return Ok(product.ToApiResponse());
         }
     }
 }

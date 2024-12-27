@@ -2,14 +2,18 @@ using Dapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using midmoshrimpgirl_api.Controllers;
 using midmoshrimpgirl_api.dataAccess.Models;
 using midmoshrimpgirl_api.dataAccess.Repositories;
 using midmoshrimpgirl_api.dataAccess.Wrappers.Dapper;
+using midmoshrimpgirl_api.Models.Exceptions;
 using midmoshrimpgirl_api.Models.Responses;
 using midmoshrimpgirl_domain.DataAccess;
+using midmoshrimpgirl_domain.Models;
 using midmoshrimpgirl_domain.Queries;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using RandomTestValues;
 using RandomTestValues.Formats;
 
@@ -75,15 +79,86 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
         [TestMethod]
         public async Task Return404_WhenProductNotFound()
         {
-            // Arrange          
+            // Arrange
+            var expectedException = new NotFoundException("Product not found.");
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
                 Arg.Is<DynamicParameters>((p) => p.Get<int>("ProductId") == _productId)).Returns([]);
 
             // Act 
             var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var resultMessage = result.Value;
 
             // Assert
             result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            resultMessage.Should().Be(expectedException.Message);
+        }
+
+        [TestMethod]
+        public async Task Return500_OnSQLError()
+        {
+            // Arrange 
+            var expectedException = new SQLException("Error encountered in SQL.");
+            _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
+                Arg.Is<DynamicParameters>((p) => p.Get<int>("ProductId") == _productId)).Throws(expectedException);
+
+            // Act 
+            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var resultMessage = result.Value;
+
+            // Assert 
+            result.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            resultMessage.Should().Be("Error encountered in SQL.");
+        }
+
+        [TestMethod]
+        [DataRow("")]
+        [DataRow(null)]
+        public async Task Return500_WhenDomainProductNameIsNullOrEmpty(string name)
+        {
+            // Arrange 
+            var expectedResult = new DatabaseProduct()
+            {
+                Name = name,
+                Price = RandomValue.Decimal(),
+                ImageLink = RandomValue.String()
+            };
+
+            _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
+                Arg.Is<DynamicParameters>((p) => p.Get<int>("@ProductId") == _productId)).Returns([expectedResult]);
+
+            // Act 
+            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var resultMessage = result.Value;
+
+            // Assert 
+            result.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            resultMessage.Should().Be("No product attributes may be empty.");
+
+        }
+        [TestMethod]
+        [DataRow("")]
+        [DataRow(null)]
+        public async Task Return500_WhenDomainProductImageLinkIsNullOrEmpty(string link)
+        {
+            // Arrange 
+            var expectedResult = new DatabaseProduct()
+            {
+                Name = RandomValue.String(),
+                Price = RandomValue.Decimal(),
+                ImageLink = link
+            };
+
+            _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
+                Arg.Is<DynamicParameters>((p) => p.Get<int>("@ProductId") == _productId)).Returns([expectedResult]);
+
+            // Act 
+            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var resultMessage = result.Value;
+
+            // Assert 
+            result.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            resultMessage.Should().Be("No product attributes may be empty.");
+
         }
     }
 }
