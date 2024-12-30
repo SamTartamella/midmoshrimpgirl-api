@@ -16,10 +16,10 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
             _dapperWrapper = dapperWrapper;
         }
 
-        public async Task<DomainProductResponse> GetById(int productId)
+        public async Task<DomainProductResponse> GetBySearchString(string productSearchString)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@ProductId", productId);
+            parameters.Add("@ProductSearchString", productSearchString);
 
             var databaseProduct = (await _dapperWrapper.ExecuteStoredProcedure<DatabaseProduct>("GetProduct", parameters)).FirstOrDefault();
 

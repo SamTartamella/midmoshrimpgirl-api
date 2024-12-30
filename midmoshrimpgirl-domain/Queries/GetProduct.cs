@@ -12,9 +12,9 @@ namespace midmoshrimpgirl_domain.Queries
             _getProductRepository = getProductRepository;
         }
 
-        public async Task<DomainProductResponse> WithId(int productId)
+        public async Task<DomainProductResponse> WithSearchString(string productSearchString)
         {
-            var domainProduct = await _getProductRepository.GetById(productId);
+            var domainProduct = await _getProductRepository.GetBySearchString(productSearchString);
             return domainProduct;
         }
     }

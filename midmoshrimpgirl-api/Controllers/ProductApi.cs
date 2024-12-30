@@ -19,12 +19,12 @@ namespace midmoshrimpgirl_api.Controllers
         }
 
         [HttpGet]
-        [Route("products/{productId}")]
-        public async Task<IActionResult> GetProduct([Required][FromRoute] int productId)
+        [Route("products/{productSearchString}")]
+        public async Task<IActionResult> GetProduct([Required][FromRoute] string productSearchString)
         {
             try
             {
-                var product = await _GetProduct.WithId(productId);
+                var product = await _GetProduct.WithSearchString(productSearchString);
                 return Ok(product.ToApiResponse());
             }
             catch (SQLException ex)

@@ -4,6 +4,6 @@ namespace midmoshrimpgirl_domain.Queries
 {
     public interface IGetProduct
     {
-        Task<DomainProductResponse> WithId(int productId);
+        Task<DomainProductResponse> WithSearchString(string productSearchString);
     }
 }

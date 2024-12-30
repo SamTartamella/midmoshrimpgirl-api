@@ -29,6 +29,7 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
 
         protected int _productId;
         protected ProductApi _sut;
+        protected string _productSearchString;
 
         [TestInitialize]
         public void Init()
@@ -39,11 +40,12 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             _sut = new ProductApi(_getProduct);
 
             _productId = RandomValue.Int();
+            _productSearchString = RandomValue.String();
         }
 
 
         [TestMethod]
-        public async Task ReturnProductResponse_WhenCalledGivenProductId()
+        public async Task ReturnProductResponse_WhenCalledGivenProductSearchString()
         {
             // Arrange
             var expectedResult = new DatabaseProduct()
@@ -62,17 +64,17 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             };         
 
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<int>("@ProductId") == _productId)).Returns([expectedResult]);
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedResult]);
 
             // Act 
-            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
 
 
             // Assert 
             result.StatusCode.Should().Be(StatusCodes.Status200OK);
             result.Value.Should().BeEquivalentTo(expectedResult);
             await _dapperWrapperMock.Received(1).ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<int>("@ProductId") == _productId));
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString));
 
         }
 
@@ -82,10 +84,10 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             // Arrange
             var expectedException = new NotFoundException("Product not found.");
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<int>("ProductId") == _productId)).Returns([]);
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([]);
 
             // Act 
-            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
             var resultMessage = result.Value;
 
             // Assert
@@ -99,10 +101,10 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             // Arrange 
             var expectedException = new SQLException("Error encountered in SQL.");
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<int>("ProductId") == _productId)).Throws(expectedException);
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Throws(expectedException);
 
             // Act 
-            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
             var resultMessage = result.Value;
 
             // Assert 
@@ -124,10 +126,10 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             };
 
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<int>("@ProductId") == _productId)).Returns([expectedResult]);
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedResult]);
 
             // Act 
-            var result = await _sut.GetProduct(_productId) as ObjectResult;
+            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
             var resultMessage = result.Value;
 
             // Assert 
@@ -135,30 +137,42 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             resultMessage.Should().Be("No product attributes may be empty.");
 
         }
-        [TestMethod]
-        [DataRow("")]
-        [DataRow(null)]
-        public async Task Return500_WhenDomainProductImageLinkIsNullOrEmpty(string link)
-        {
-            // Arrange 
-            var expectedResult = new DatabaseProduct()
-            {
-                Name = RandomValue.String(),
-                Price = RandomValue.Decimal(),
-                ImageLink = link
-            };
 
-            _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<int>("@ProductId") == _productId)).Returns([expectedResult]);
+        //[TestMethod]
+        //[DataRow("")]
+        //[DataRow(null)]
+        //public async Task ReturnDefaultImage_WhenDomainProductImageLinkIsNullOrEmpty(string link)
+        //{
+        //    // Arrange 
+        //    var expectedDefaultImage = RandomValue.String(); //this needs to be in config
 
-            // Act 
-            var result = await _sut.GetProduct(_productId) as ObjectResult;
-            var resultMessage = result.Value;
+        //    var expectedDatabaseResult = new DatabaseProduct()
+        //    {
+        //        Name = RandomValue.String(),
+        //        Price = RandomValue.Decimal(),
+        //        ImageLink = link
+        //    };
 
-            // Assert 
-            result.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
-            resultMessage.Should().Be("No product attributes may be empty.");
+        //    var expectedApiResponse = new DomainProductResponse()
+        //    {
+        //        Name = expectedDatabaseResult.Name,
+        //        Price = expectedDatabaseResult.Price,
+        //        ImageLink = 
+        //    }
 
-        }
+        //    _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
+        //        Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedDatabaseResult]);
+
+        //    // Act 
+        //    var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
+        //    var resultMessage = result.Value;
+
+        //    // Assert 
+        //    result.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+        //    //resultMessage.Should().Be("No product attributes may be empty.");
+        //    //Assert that we are getting expected ApiResponse that has default return image
+
+        //}
+
     }
 }

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\midmoshrimpgirl-domain\midmoshrimpgirl-domain.csproj" />
+    <ProjectReference Include="..\midmoshrimpgirl-domain\midmoshrimpgirl-api.domain.csproj" />
   </ItemGroup>
 
 </Project>

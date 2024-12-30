@@ -1,4 +1,8 @@
 
+using midmoshrimpgirl_api.IoC;
+using midmoshrimpgirl_domain.DataAccess;
+using midmoshrimpgirl_domain.Queries;
+
 namespace midmoshrimpgirl_api
 {
     public class Program
@@ -13,6 +17,8 @@ namespace midmoshrimpgirl_api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            AppDependencies.RegisterDependencies(builder.Services, builder.Configuration);
 
             var app = builder.Build();
 

@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "midmoshrimpgirl-api", "midmoshrimpgirl-api\midmoshrimpgirl-api.csproj", "{6BDBB68D-1500-4DEF-937F-372375324FC8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29012969-BF36-4931-BFF1-EA1F74CA40D1} = {29012969-BF36-4931-BFF1-EA1F74CA40D1}
+		{6E169369-182C-4B05-B51F-5FA8019DE872} = {6E169369-182C-4B05-B51F-5FA8019DE872}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "midmoshrimpgirl-api.tests", "midmoshrimpgirl-api.tests\midmoshrimpgirl-api.tests.csproj", "{835EFD42-784E-48B5-8A38-5FAD2A2B40E9}"
@@ -20,7 +21,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "midmoshrimpgirl-api.dataAcc
 		{29012969-BF36-4931-BFF1-EA1F74CA40D1} = {29012969-BF36-4931-BFF1-EA1F74CA40D1}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "midmoshrimpgirl-domain", "midmoshrimpgirl-domain\midmoshrimpgirl-domain.csproj", "{29012969-BF36-4931-BFF1-EA1F74CA40D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "midmoshrimpgirl-api.domain", "midmoshrimpgirl-domain\midmoshrimpgirl-api.domain.csproj", "{29012969-BF36-4931-BFF1-EA1F74CA40D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "midmoshrimpgirl-api.IoC", "midmoshrimpgirl-api.IoC\midmoshrimpgirl-api.IoC.csproj", "{6E169369-182C-4B05-B51F-5FA8019DE872}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +47,10 @@ Global
 		{29012969-BF36-4931-BFF1-EA1F74CA40D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29012969-BF36-4931-BFF1-EA1F74CA40D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29012969-BF36-4931-BFF1-EA1F74CA40D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E169369-182C-4B05-B51F-5FA8019DE872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E169369-182C-4B05-B51F-5FA8019DE872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E169369-182C-4B05-B51F-5FA8019DE872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E169369-182C-4B05-B51F-5FA8019DE872}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,6 +4,6 @@ namespace midmoshrimpgirl_domain.DataAccess
 {
     public interface IGetProductRepository
     {
-        public Task<DomainProductResponse> GetById(int productId);
+        public Task<DomainProductResponse> GetBySearchString(string productSearchString);
     }
 }

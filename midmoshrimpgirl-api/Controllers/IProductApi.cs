@@ -5,6 +5,6 @@ namespace midmoshrimpgirl_api.Controllers
 {
     public interface IProductApi
     {
-        Task<IActionResult> GetProduct(int productId);
+        Task<IActionResult> GetProduct(string productSearchString);
     }
 }
