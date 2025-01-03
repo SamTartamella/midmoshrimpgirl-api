@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\midmoshrimpgirl-api.dataAccess\midmoshrimpgirl-api.dataAccess.csproj" />
+    <ProjectReference Include="..\midmoshrimpgirl-domain\midmoshrimpgirl-api.domain.csproj" />
+  </ItemGroup>
+
 </Project>

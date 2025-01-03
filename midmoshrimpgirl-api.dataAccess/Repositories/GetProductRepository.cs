@@ -10,10 +10,12 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
     public class GetProductRepository : IGetProductRepository
     {
         private readonly IDapperWrapper _dapperWrapper;
+        private readonly string _defaultImageLink; 
 
-        public GetProductRepository(IDapperWrapper dapperWrapper)
+        public GetProductRepository(IDapperWrapper dapperWrapper, string defaultImageLink)
         {
             _dapperWrapper = dapperWrapper;
+            _defaultImageLink = defaultImageLink;
         }
 
         public async Task<DomainProductResponse> GetBySearchString(string productSearchString)
@@ -28,17 +30,24 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
                 throw new NotFoundException("Product not found.");
             }
 
-            if (string.IsNullOrEmpty(databaseProduct.Name) || string.IsNullOrEmpty(databaseProduct.ImageLink)) 
+            if (string.IsNullOrEmpty(databaseProduct.Name)) 
             {
-                throw new NullReferenceException("No product attributes may be empty.");
+                throw new NullReferenceException("Product name may not be empty.");
             }
 
-            var domainProduct = new DomainProductResponse()
+            var domainProduct = new DomainProductResponse(); 
+
+            if (string.IsNullOrEmpty(databaseProduct.ImageLink))
             {
-                Name = databaseProduct.Name,
-                Price = databaseProduct.Price,
-                ImageLink = databaseProduct.ImageLink,
-            };
+                domainProduct.ImageLink = _defaultImageLink;
+            }
+            else
+            {
+                domainProduct.ImageLink = databaseProduct.ImageLink;
+            }
+
+            domainProduct.Name = databaseProduct.Name;
+            domainProduct.Price = databaseProduct.Price;
 
             return domainProduct;
         }
