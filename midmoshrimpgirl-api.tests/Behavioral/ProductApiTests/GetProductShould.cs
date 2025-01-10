@@ -169,10 +169,10 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             var resultMessage = (ProductResponse)result.Value;
 
             // Assert 
-            resultMessage.Name.Should().Be(expectedApiResponse.Name);
-                
-            //await _dapperWrapperMock.Received(1).ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-            //    Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString));
+            resultMessage.ImageLink.Should().Be(expectedApiResponse.ImageLink);
+
+            await _dapperWrapperMock.Received(1).ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString));
 
         }
 

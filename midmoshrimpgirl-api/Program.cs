@@ -18,6 +18,17 @@ namespace midmoshrimpgirl_api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Avoiding CORS error when running locally
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocal", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200") // Angular UI URL
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             AppDependencies.RegisterDependencies(builder.Services, builder.Configuration);
 
             var app = builder.Build();
@@ -28,6 +39,8 @@ namespace midmoshrimpgirl_api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowLocal");
 
             app.UseHttpsRedirection();
 

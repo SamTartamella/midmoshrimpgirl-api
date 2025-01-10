@@ -10,7 +10,8 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
     public class GetProductRepository : IGetProductRepository
     {
         private readonly IDapperWrapper _dapperWrapper;
-        private readonly string _defaultImageLink; 
+        private readonly string _defaultImageLink;
+        private readonly string _nonConfigDefaultImageLink; 
 
         public GetProductRepository(IDapperWrapper dapperWrapper, string defaultImageLink)
         {
