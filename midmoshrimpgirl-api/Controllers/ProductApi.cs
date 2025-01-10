@@ -19,12 +19,12 @@ namespace midmoshrimpgirl_api.Controllers
         }
 
         [HttpGet]
-        [Route("products/{productSearchString}")]
-        public async Task<IActionResult> GetProduct([Required][FromRoute] string productSearchString)
+        [Route("products/{productUrlSearchString}")]
+        public async Task<IActionResult> GetProductByUrlString([Required][FromRoute] string productUrlSearchString)
         {
             try
             {
-                var product = await _GetProduct.WithSearchString(productSearchString);
+                var product = await _GetProduct.WithSearchString(productUrlSearchString);
                 return Ok(product.ToApiResponse());
             }
             catch (SQLException ex)
@@ -40,6 +40,13 @@ namespace midmoshrimpgirl_api.Controllers
                 return StatusCode(500, ex.Message);
             }
 
+        }
+
+        [HttpGet]
+        [Route ("{productName}")]
+        public IActionResult GetProductByName([Required][FromRoute] string productName)
+        {
+            throw new NotImplementedException();
         }
     }
 }
