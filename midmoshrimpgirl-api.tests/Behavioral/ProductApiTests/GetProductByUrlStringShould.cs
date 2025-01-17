@@ -2,50 +2,31 @@ using Dapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using midmoshrimpgirl_api.Controllers;
 using midmoshrimpgirl_api.dataAccess.Models;
-using midmoshrimpgirl_api.dataAccess.Repositories;
-using midmoshrimpgirl_api.dataAccess.Wrappers.Dapper;
-using midmoshrimpgirl_api.Models.Exceptions;
 using midmoshrimpgirl_api.Models.Responses;
-using midmoshrimpgirl_domain.DataAccess;
 using midmoshrimpgirl_domain.Models;
-using midmoshrimpgirl_domain.Queries;
+using midmoshrimpgirl_domain.Models.Exceptions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using RandomTestValues;
-using RandomTestValues.Formats;
 
 namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
 {
     [TestClass]
     [TestCategory("Unit")]
-    public class GetProductShould
+    public class GetProductByUrlStringShould : ProductApiTestBase
     {
-        protected IDapperWrapper _dapperWrapperMock;
-        protected IGetProduct _getProduct;
-        protected IGetProductRepository _getProductRepository;
-
         protected int _productId;
-        protected ProductApi _sut;
         protected string _productSearchString;
-        protected string _mockDefaultImageLink;
 
         [TestInitialize]
-        public void Init()
+        public override void Init()
         {
-            _mockDefaultImageLink = RandomValue.String(); 
-
-            _dapperWrapperMock = Substitute.For<IDapperWrapper>();
-            _getProductRepository = new GetProductRepository(_dapperWrapperMock, _mockDefaultImageLink);
-            _getProduct = new GetProduct(_getProductRepository);
-            _sut = new ProductApi(_getProduct);
+            base.Init();
 
             _productId = RandomValue.Int();
             _productSearchString = RandomValue.String();
         }
-
 
         [TestMethod]
         public async Task ReturnProductResponse_WhenCalledGivenProductSearchString()
@@ -63,14 +44,14 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
                 Name = expectedResult.Name,
                 Price = expectedResult.Price,
                 ImageLink = expectedResult.ImageLink
-
-            };         
+            };
 
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedResult]);
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString))
+                .Returns([expectedResult]);
 
             // Act 
-            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
+            var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
             var resultData = (ProductResponse)result.Value;
 
 
@@ -91,7 +72,7 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
                 Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([]);
 
             // Act 
-            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
+            var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
             var resultMessage = result.Value;
 
             // Assert
@@ -108,7 +89,7 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
                 Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Throws(expectedException);
 
             // Act 
-            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
+            var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
             var resultMessage = result.Value;
 
             // Assert 
@@ -133,7 +114,7 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
                 Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedResult]);
 
             // Act 
-            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
+            var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
             var resultMessage = result.Value;
 
             // Assert 
@@ -165,7 +146,7 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
                 Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedDatabaseResult]);
 
             // Act 
-            var result = await _sut.GetProduct(_productSearchString) as ObjectResult;
+            var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
             var resultMessage = (ProductResponse)result.Value;
 
             // Assert 
@@ -175,6 +156,5 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
                 Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString));
 
         }
-
     }
 }

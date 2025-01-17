@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using midmoshrimpgirl_api.Models.Responses;
 
 namespace midmoshrimpgirl_api.Controllers
 {
@@ -7,6 +6,6 @@ namespace midmoshrimpgirl_api.Controllers
     {
         Task<IActionResult> GetProductByUrlString(string productSearchString);
 
-        IActionResult GetProductByName(string productName);
+        Task <IActionResult> GetProductByName(string productName);
     }
 }

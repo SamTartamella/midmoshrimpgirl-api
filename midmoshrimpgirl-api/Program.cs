@@ -1,7 +1,5 @@
 
 using midmoshrimpgirl_api.IoC;
-using midmoshrimpgirl_domain.DataAccess;
-using midmoshrimpgirl_domain.Queries;
 
 namespace midmoshrimpgirl_api
 {

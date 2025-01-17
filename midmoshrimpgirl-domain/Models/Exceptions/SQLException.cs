@@ -1,6 +1,6 @@
-﻿namespace midmoshrimpgirl_api.Models.Exceptions;
+﻿namespace midmoshrimpgirl_domain.Models.Exceptions;
 
 public class SQLException : Exception
 {
-    public SQLException(string message): base(message) { }
+    public SQLException(string message) : base(message) { }
 }

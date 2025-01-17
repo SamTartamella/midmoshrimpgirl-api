@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using midmoshrimpgirl_api.Extensions;
-using midmoshrimpgirl_api.Models.Exceptions;
-using midmoshrimpgirl_api.Models.Responses;
-using midmoshrimpgirl_domain.Models;
+using midmoshrimpgirl_domain.Models.Exceptions;
 using midmoshrimpgirl_domain.Queries;
 using System.ComponentModel.DataAnnotations;
+using NullReferenceException = midmoshrimpgirl_domain.Models.Exceptions.NullReferenceException;
 
 namespace midmoshrimpgirl_api.Controllers
 {
@@ -39,12 +38,11 @@ namespace midmoshrimpgirl_api.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-
         }
 
         [HttpGet]
-        [Route ("{productName}")]
-        public IActionResult GetProductByName([Required][FromRoute] string productName)
+        [Route("{productName}")]
+        public async Task<IActionResult> GetProductByName([Required][FromRoute] string productName)
         {
             throw new NotImplementedException();
         }

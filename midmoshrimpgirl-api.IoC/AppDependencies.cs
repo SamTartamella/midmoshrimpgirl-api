@@ -4,11 +4,6 @@ using midmoshrimpgirl_api.dataAccess.Repositories;
 using midmoshrimpgirl_api.dataAccess.Wrappers.Dapper;
 using midmoshrimpgirl_domain.DataAccess;
 using midmoshrimpgirl_domain.Queries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace midmoshrimpgirl_api.IoC
 {

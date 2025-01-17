@@ -1,9 +1,10 @@
 ﻿using Dapper;
 using midmoshrimpgirl_api.dataAccess.Models;
 using midmoshrimpgirl_api.dataAccess.Wrappers.Dapper;
-using midmoshrimpgirl_api.Models.Exceptions;
 using midmoshrimpgirl_domain.DataAccess;
 using midmoshrimpgirl_domain.Models;
+using midmoshrimpgirl_domain.Models.Exceptions;
+using NullReferenceException = midmoshrimpgirl_domain.Models.Exceptions.NullReferenceException;
 
 namespace midmoshrimpgirl_api.dataAccess.Repositories
 {
@@ -11,7 +12,7 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
     {
         private readonly IDapperWrapper _dapperWrapper;
         private readonly string _defaultImageLink;
-        private readonly string _nonConfigDefaultImageLink; 
+        private readonly string _nonConfigDefaultImageLink;
 
         public GetProductRepository(IDapperWrapper dapperWrapper, string defaultImageLink)
         {
@@ -31,12 +32,12 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
                 throw new NotFoundException("Product not found.");
             }
 
-            if (string.IsNullOrEmpty(databaseProduct.Name)) 
+            if (string.IsNullOrEmpty(databaseProduct.Name))
             {
                 throw new NullReferenceException("Product name may not be empty.");
             }
 
-            var domainProduct = new DomainProductResponse(); 
+            var domainProduct = new DomainProductResponse();
 
             if (string.IsNullOrEmpty(databaseProduct.ImageLink))
             {
