@@ -16,7 +16,7 @@ BEGIN
 	SELECT [Name], [Price], [ImageLink]
 	FROM [dbo].[Products]
 	INNER JOIN [dbo].[ProductSearch] ON Products.Id = ProductSearch.ProductId
-	WHERE ProductSearch.SearchName = @ProductgSearchString
+	WHERE ProductSearch.SearchName = @ProductSearchString
 
 END
 GO

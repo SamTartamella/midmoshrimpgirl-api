@@ -23,6 +23,11 @@ namespace midmoshrimpgirl_api.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(productUrlSearchString))
+                {
+                    return StatusCode(400, "Product URL Search String may not be null or empty.");
+                }
+
                 var product = await _GetProduct.WithSearchString(productUrlSearchString);
                 return Ok(product.ToApiResponse());
             }
@@ -44,7 +49,24 @@ namespace midmoshrimpgirl_api.Controllers
         [Route("{productName}")]
         public async Task<IActionResult> GetProductByName([Required][FromRoute] string productName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrEmpty(productName))
+                {
+                    return StatusCode(400, "Product Name may not be null or empty.");
+                }
+
+                var product = await _GetProduct.WithName(productName);
+                return Ok(product.ToApiResponse());
+            }
+            catch (SQLException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return StatusCode(404, ex.Message);
+            }
         }
     }
 }

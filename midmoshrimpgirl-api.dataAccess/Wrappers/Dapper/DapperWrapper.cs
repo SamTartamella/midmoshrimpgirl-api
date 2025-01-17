@@ -8,7 +8,7 @@ namespace midmoshrimpgirl_api.dataAccess.Wrappers.Dapper
     {
         private readonly string _connectionString;
 
-        public DapperWrapper() { } //TODO: Remove 
+        //public DapperWrapper() { } //TODO: Remove 
 
         public DapperWrapper(string connectionString)
         {

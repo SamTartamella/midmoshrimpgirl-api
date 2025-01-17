@@ -119,7 +119,7 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
 
             // Assert 
             result.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
-            resultMessage.Should().Be("Product name may not be empty.");
+            resultMessage.Should().Be("Product name is empty.");
 
         }
 
@@ -143,7 +143,8 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
             };
 
             _dapperWrapperMock.ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
-                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString)).Returns([expectedDatabaseResult]);
+                Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString))
+                .Returns([expectedDatabaseResult]);
 
             // Act 
             var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
@@ -154,6 +155,22 @@ namespace midmoshrimpgirl_api.tests.Behavioral.ProductApiTests
 
             await _dapperWrapperMock.Received(1).ExecuteStoredProcedure<DatabaseProduct>(Arg.Is<string>("GetProduct"),
                 Arg.Is<DynamicParameters>((p) => p.Get<string>("@ProductSearchString") == _productSearchString));
+
+        }
+
+        [TestMethod]
+        [DataRow("")]
+        [DataRow(null)]
+        public async Task Return400_GivenNulOrEmptyString(string productSearchString)
+        {
+            // Arrange 
+            _productSearchString = "";
+
+            // Act 
+            var result = await _sut.GetProductByUrlString(_productSearchString) as ObjectResult;
+
+            // Assert 
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
 
         }
     }

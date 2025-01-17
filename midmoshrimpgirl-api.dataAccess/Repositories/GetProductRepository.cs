@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using midmoshrimpgirl_api.dataAccess.Extensions;
 using midmoshrimpgirl_api.dataAccess.Models;
 using midmoshrimpgirl_api.dataAccess.Wrappers.Dapper;
 using midmoshrimpgirl_domain.DataAccess;
@@ -25,7 +26,8 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("@ProductSearchString", productSearchString);
 
-            var databaseProduct = (await _dapperWrapper.ExecuteStoredProcedure<DatabaseProduct>("GetProduct", parameters)).FirstOrDefault();
+            var databaseProduct = (await _dapperWrapper.ExecuteStoredProcedure<DatabaseProduct>("GetProduct", parameters))
+                .FirstOrDefault();
 
             if (databaseProduct is null)
             {
@@ -34,24 +36,41 @@ namespace midmoshrimpgirl_api.dataAccess.Repositories
 
             if (string.IsNullOrEmpty(databaseProduct.Name))
             {
-                throw new NullReferenceException("Product name may not be empty.");
+                throw new NullReferenceException("Product name is empty.");
             }
 
-            var domainProduct = new DomainProductResponse();
+            var domainProduct = databaseProduct.ToDomainProduct();
 
             if (string.IsNullOrEmpty(databaseProduct.ImageLink))
             {
                 domainProduct.ImageLink = _defaultImageLink;
             }
-            else
-            {
-                domainProduct.ImageLink = databaseProduct.ImageLink;
-            }
-
-            domainProduct.Name = databaseProduct.Name;
-            domainProduct.Price = databaseProduct.Price;
 
             return domainProduct;
+        }
+
+        public async Task<DomainProductResponse> GetByName(string productName)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@ProductName", productName);
+
+            var databaseProduct = (await _dapperWrapper.ExecuteStoredProcedure<DatabaseProduct>("GetProductByName", parameters))
+                .FirstOrDefault();
+
+            if (databaseProduct is null)
+            {
+                throw new NotFoundException("Product not found.");
+            }
+
+            var domainProduct = databaseProduct.ToDomainProduct();
+
+            if (string.IsNullOrEmpty(databaseProduct.ImageLink))
+            {
+                domainProduct.ImageLink = _defaultImageLink;
+            }
+
+            return domainProduct;
+
         }
     }
 }
